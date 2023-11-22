@@ -7,7 +7,7 @@ As soon as the internal clearance is finished, we will update the code base.
 
 ### Unconditional Sampling Trajectory
 
-![Unconditional molecule sampling trajectory](https://github.com/tuanle618/tmp-e3moldiffusion/blob/main/assets/unconditional-sampling-trajectory.gif)
+<img src="https://github.com/tuanle618/tmp-e3moldiffusion/blob/main/assets/unconditional-sampling-trajectory.gif" width="500" height="500"/>
 
 
 ### Conditional Sampling Trajectory on increased polarizability
@@ -16,4 +16,4 @@ As soon as the internal clearance is finished, we will update the code base.
 
 ### Conditional Sampling Trajectory on a fixed protein pocket
 
-![Unconditional ligand sampling trajectory](https://github.com/tuanle618/tmp-e3moldiffusion/blob/main/assets/conditional-ligand-pocket-sampling-trajectory.gif)
+<img src="https://github.com/tuanle618/tmp-e3moldiffusion/blob/main/assets/conditional-ligand-pocket-sampling-trajectory.gif" width="500" height="500"/>
