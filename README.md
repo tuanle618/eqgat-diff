@@ -1,4 +1,4 @@
-# tmp-e3moldiffusion
+# eqgat-diff
 
 This repository serves as placeholder.  
 We plan to open-source our code base as soon as possible, but due to internal clearance we cannot share the code right away. 
