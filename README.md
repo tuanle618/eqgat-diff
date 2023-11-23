@@ -4,6 +4,8 @@ This repository serves as placeholder.
 We plan to open-source our code base as soon as possible, but due to internal clearance we cannot share the code right away. 
 As soon as the internal clearance is finished, we will update the code base.
 
+Below, we show some sampling trajectories from our models. The corresponding .gif files can be found in the `assets/` directory.
+
 
 ### Unconditional Sampling Trajectory
 
