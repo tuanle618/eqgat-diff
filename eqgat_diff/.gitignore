@@ -1,0 +1,44 @@
+*.egg-info
+.eggs
+__pycache__
+build
+dist
+.idea/*
+
+*.DS_Store*
+
+# setuptools_scm
+e3moldiffusion/_version.py
+figs/
+e3moldiffusion/potential.py
+geom/train_potential.py
+geom/data/*
+!geom/data/.gitkeep
+geom/slurm_outs/*
+
+e3moldiffusion/sample_data.py
+sample_data/*
+
+.vscode/
+
+configs/
+scripts/
+generate_ligands.sh
+# scripts/experiment*.sl
+
+geom/.ipynb_checkpoints/
+geom/trajs/*
+geom/my_movie.gif
+geom/vis.ipynb
+
+geom/logs
+geom/evaluation/
+geom/train_gan.py
+
+# fullerene/
+fullerene/data/
+
+notebooks/
+_old/
+
+*xlsx

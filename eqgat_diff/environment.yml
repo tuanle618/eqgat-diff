@@ -1,0 +1,34 @@
+name: e3moldiffusion
+channels:
+  - anaconda
+  - conda-forge
+  - defaults
+  - pytorch
+  - pyg
+  - nvidia
+dependencies:
+  - python=3.10.0
+  - pip
+  - notebook
+  - matplotlib
+  - pytorch::pytorch=2.0.1
+  - pyg::pyg=2.3.0
+  - pyg::pytorch-scatter
+  - pyg::pytorch-sparse
+  - pyg::pytorch-cluster
+  - conda-forge::rdkit=2023.03.2
+  - conda-forge::pytorch-lightning=2.0.6
+  - conda-forge::jupyter
+  - conda-forge::openbabel
+  - xtb
+  - pip:
+      - xtb
+      - ase
+      - py3Dmol
+      - lmdb
+      - nglview
+      - rmsd
+      - torch_ema
+      - tensorboard
+      - biopython
+      - xtb
