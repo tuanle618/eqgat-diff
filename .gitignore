@@ -1,0 +1,10 @@
+*.egg-info
+.eggs
+__pycache__
+build
+dist
+.idea/*
+
+*.DS_Store*
+
+.vscode/
