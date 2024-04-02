@@ -302,22 +302,3 @@ class GeomDataModule(AbstractAdaptiveDataModule):
         )
 
         return dl
-
-
-if __name__ == "__main__":
-    # Creating the Pytorch Geometric InMemoryDatasets
-
-    # ff = "/hpfs/userws/"
-    # ff = "/sharedhome/"
-    # DATAROOT = f"{ff}let55/projects/e3moldiffusion_experiments/data/geom/data"
-    DATAROOT = (
-        "/home/let55/workspace/projects/e3moldiffusion_experiments/data/geom/data"
-    )
-    dataset = GeomDrugsDataset(root=DATAROOT, split="val", remove_h=False)
-    print(dataset)
-    dataset = GeomDrugsDataset(root=DATAROOT, split="test", remove_h=False)
-    print(dataset)
-    dataset = GeomDrugsDataset(root=DATAROOT, split="train", remove_h=False)
-    print(dataset)
-    print(dataset[0])
-    print(dataset[0].edge_attr)

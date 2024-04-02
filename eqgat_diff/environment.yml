@@ -1,4 +1,4 @@
-name: e3moldiffusion
+name: eqgatdiff
 channels:
   - anaconda
   - conda-forge

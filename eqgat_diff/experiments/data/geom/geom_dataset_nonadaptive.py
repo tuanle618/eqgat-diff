@@ -31,7 +31,7 @@ full_atom_encoder = {
 
 
 class GeomDataModule(AbstractDataModule):
-    def __init__(self, cfg):
+    def __init__(self, cfg, only_stats: bool = False):
         self.datadir = cfg.dataset_root
         root_path = cfg.dataset_root
         self.cfg = cfg
@@ -39,22 +39,24 @@ class GeomDataModule(AbstractDataModule):
         self.persistent_workers = False
 
         train_dataset = GeomDrugsDataset(
-            split="train", root=root_path, remove_h=cfg.remove_hs
+            split="train", root=root_path, remove_h=cfg.remove_hs, only_stats=only_stats
         )
         val_dataset = GeomDrugsDataset(
-            split="val", root=root_path, remove_h=cfg.remove_hs
+            split="val", root=root_path, remove_h=cfg.remove_hs, only_stats=only_stats
         )
         test_dataset = GeomDrugsDataset(
-            split="test", root=root_path, remove_h=cfg.remove_hs
+            split="test", root=root_path, remove_h=cfg.remove_hs, only_stats=only_stats
         )
-        if cfg.select_train_subset:
-            self.idx_train = train_subset(
-                dset_len=len(train_dataset),
-                train_size=cfg.train_size,
-                seed=cfg.seed,
-                filename=join(cfg.save_dir, "splits.npz"),
-            )
-            train_dataset = Subset(train_dataset, self.idx_train)
+        
+        if not only_stats:
+            if cfg.select_train_subset:
+                self.idx_train = train_subset(
+                    dset_len=len(train_dataset),
+                    train_size=cfg.train_size,
+                    seed=cfg.seed,
+                    filename=join(cfg.save_dir, "splits.npz"),
+                )
+                train_dataset = Subset(train_dataset, self.idx_train)
 
         self.remove_h = cfg.remove_hs
         self.statistics = {
@@ -130,20 +132,3 @@ class GeomDataModule(AbstractDataModule):
         )
 
         return dl
-
-
-if __name__ == "__main__":
-    # Creating the Pytorch Geometric InMemoryDatasets
-
-    ff = "/hpfs/userws/"
-    # ff = "/sharedhome/"
-
-    DATAROOT = f"{ff}let55/projects/e3moldiffusion/experiments/geom/data"
-    dataset = GeomDrugsDataset(root=DATAROOT, split="val", remove_h=True)
-    print(dataset)
-    dataset = GeomDrugsDataset(root=DATAROOT, split="test", remove_h=True)
-    print(dataset)
-    dataset = GeomDrugsDataset(root=DATAROOT, split="train", remove_h=True)
-    print(dataset)
-    print(dataset[0])
-    print(dataset[0].edge_attr)

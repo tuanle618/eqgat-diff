@@ -36,7 +36,7 @@ full_atom_encoder = {
 
 class GeomDrugsDataset(InMemoryDataset):
     def __init__(
-        self, split, root, remove_h, transform=None, pre_transform=None, pre_filter=None
+        self, split, root, remove_h, transform=None, pre_transform=None, pre_filter=None, only_stats=False
     ):
         assert split in ["train", "val", "test"]
         self.split = split
@@ -52,7 +52,12 @@ class GeomDrugsDataset(InMemoryDataset):
             }
 
         super().__init__(root, transform, pre_transform, pre_filter)
-        self.data, self.slices = torch.load(self.processed_paths[0])
+        
+        if not only_stats:
+            self.data, self.slices = torch.load(self.processed_paths[0])
+        else:
+            self.data, self.slices = None, None
+            
         self.statistics = dataset_utils.Statistics(
             num_nodes=load_pickle(self.processed_paths[1]),
             atom_types=torch.from_numpy(np.load(self.processed_paths[2])),
@@ -185,19 +190,19 @@ class GeomDrugsDataset(InMemoryDataset):
 
 
 class GeomDataModule(AbstractAdaptiveDataModule):
-    def __init__(self, cfg):
+    def __init__(self, cfg, only_stats: bool = False):
         self.datadir = cfg.dataset_root
         root_path = cfg.dataset_root
         self.pin_memory = True
 
         train_dataset = GeomDrugsDataset(
-            split="train", root=root_path, remove_h=cfg.remove_hs
+            split="train", root=root_path, remove_h=cfg.remove_hs, only_stats=only_stats
         )
         val_dataset = GeomDrugsDataset(
-            split="val", root=root_path, remove_h=cfg.remove_hs
+            split="val", root=root_path, remove_h=cfg.remove_hs, only_stats=only_stats
         )
         test_dataset = GeomDrugsDataset(
-            split="test", root=root_path, remove_h=cfg.remove_hs
+            split="test", root=root_path, remove_h=cfg.remove_hs, only_stats=only_stats
         )
 
         self.statistics = {
@@ -206,15 +211,16 @@ class GeomDataModule(AbstractAdaptiveDataModule):
             "test": test_dataset.statistics,
         }
 
-        if cfg.select_train_subset:
-            self.idx_train = train_subset(
-                dset_len=len(train_dataset),
-                train_size=cfg.train_size,
-                seed=cfg.seed,
-                filename=join(cfg.save_dir, "splits.npz"),
-            )
-            self.train_smiles = train_dataset.smiles
-            train_dataset = Subset(train_dataset, self.idx_train)
+        if not only_stats:
+            if cfg.select_train_subset:
+                self.idx_train = train_subset(
+                    dset_len=len(train_dataset),
+                    train_size=cfg.train_size,
+                    seed=cfg.seed,
+                    filename=join(cfg.save_dir, "splits.npz"),
+                )
+                self.train_smiles = train_dataset.smiles
+                train_dataset = Subset(train_dataset, self.idx_train)
 
         self.remove_h = cfg.remove_hs
 
@@ -302,22 +308,3 @@ class GeomDataModule(AbstractAdaptiveDataModule):
         )
 
         return dl
-
-
-if __name__ == "__main__":
-    # Creating the Pytorch Geometric InMemoryDatasets
-
-    # ff = "/hpfs/userws/"
-    # ff = "/sharedhome/"
-    # DATAROOT = f"{ff}let55/projects/e3moldiffusion_experiments/data/geom/data"
-    DATAROOT = (
-        "/home/let55/workspace/projects/e3moldiffusion_experiments/data/geom/data"
-    )
-    dataset = GeomDrugsDataset(root=DATAROOT, split="val", remove_h=False)
-    print(dataset)
-    dataset = GeomDrugsDataset(root=DATAROOT, split="test", remove_h=False)
-    print(dataset)
-    dataset = GeomDrugsDataset(root=DATAROOT, split="train", remove_h=False)
-    print(dataset)
-    print(dataset[0])
-    print(dataset[0].edge_attr)

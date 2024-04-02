@@ -72,6 +72,7 @@ class QM9Dataset(InMemoryDataset):
         transform=None,
         pre_transform=None,
         pre_filter=None,
+        only_stats=False
     ):
         self.split = split
         if self.split == "train":
@@ -89,7 +90,10 @@ class QM9Dataset(InMemoryDataset):
             }
 
         super().__init__(root, transform, pre_transform, pre_filter)
-        self.data, self.slices = torch.load(self.processed_paths[0])
+        if not only_stats:
+            self.data, self.slices = torch.load(self.processed_paths[0])
+        else:
+            self.data, self.slices = None, None
 
         self.statistics = Statistics(
             num_nodes=load_pickle(self.processed_paths[1]),
@@ -268,31 +272,31 @@ class QM9Dataset(InMemoryDataset):
 
 
 class QM9DataModule(AbstractDataModule):
-    def __init__(self, cfg):
+    def __init__(self, cfg, only_stats: bool = False):
         self.datadir = cfg.dataset_root
         root_path = self.datadir
 
         train_dataset = QM9Dataset(
-            split="train", root=root_path, remove_h=cfg.remove_hs
+            split="train", root=root_path, remove_h=cfg.remove_hs, only_stats=only_stats
         )
-        val_dataset = QM9Dataset(split="val", root=root_path, remove_h=cfg.remove_hs)
-        test_dataset = QM9Dataset(split="test", root=root_path, remove_h=cfg.remove_hs)
+        val_dataset = QM9Dataset(split="val", root=root_path, remove_h=cfg.remove_hs, only_stats=only_stats)
+        test_dataset = QM9Dataset(split="test", root=root_path, remove_h=cfg.remove_hs, only_stats=only_stats)
 
         self.statistics = {
             "train": train_dataset.statistics,
             "val": val_dataset.statistics,
             "test": test_dataset.statistics,
         }
-
-        if cfg.select_train_subset:
-            self.idx_train = train_subset(
-                dset_len=len(train_dataset),
-                train_size=cfg.train_size,
-                seed=cfg.seed,
-                filename=join(cfg.save_dir, "splits.npz"),
-            )
-            self.train_smiles = train_dataset.smiles
-            train_dataset = Subset(train_dataset, self.idx_train)
+        if not only_stats:
+            if cfg.select_train_subset:
+                self.idx_train = train_subset(
+                    dset_len=len(train_dataset),
+                    train_size=cfg.train_size,
+                    seed=cfg.seed,
+                    filename=join(cfg.save_dir, "splits.npz"),
+                )
+                self.train_smiles = train_dataset.smiles
+                train_dataset = Subset(train_dataset, self.idx_train)
 
         self.remove_h = cfg.remove_hs
         super().__init__(
@@ -319,16 +323,3 @@ class QM9DataModule(AbstractDataModule):
         )
 
         return dl
-
-
-if __name__ == "__main__":
-    # Creating the Pytorch Geometric InMemoryDatasets
-    DATAROOT = "/hpfs/userws/let55/projects/e3moldiffusion/experiments/qm9/data"
-    dataset = QM9Dataset(root=DATAROOT, split="val", remove_h=False)
-    print(dataset)
-    dataset = QM9Dataset(root=DATAROOT, split="test", remove_h=False)
-    print(dataset)
-    dataset = QM9Dataset(root=DATAROOT, split="train", remove_h=False)
-    print(dataset)
-    print(dataset[0])
-    print(dataset[0].edge_attr)

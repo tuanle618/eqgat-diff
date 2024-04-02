@@ -16,7 +16,8 @@ mamba env create -f environment.yml
  An example training run can be executed with the following command
 
  ```bash
- mamba activate e3moldiffusion
+ mamba activate eqgatdiff
+ export PYTHONPATH="YOUR_ABSOLUTE_PATH/eqgat-diff/eqgat_diff"
  python experiments/run_train --conf configs/my_config_file.yaml
  ```
 
@@ -27,3 +28,8 @@ mamba env create -f environment.yml
  The same model, that leverages Gaussian diffusion for atomic coordinates, atom- and bond-types is implemented in `experiments/diffusion_continuous.py`.
 
  All configurable hyperparameters are listed in `experiments/hparams.py`
+
+ ## Inference and Weights
+
+ Currently we are still in the progress of publishing the code. Upon request, we provide model weights of the QM9 and Geom-Drugs models.
+ Please look into `inference/` and `weights/` subdirectory for more details.

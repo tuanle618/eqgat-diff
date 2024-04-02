@@ -349,35 +349,3 @@ class GeomQMDataModule(AbstractAdaptiveDataModule):
         )
 
         return dl
-
-
-if __name__ == "__main__":
-    import argparse
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "-n",
-        "--names",
-        nargs="*",
-        type=str,
-        help="Names of datasets, separated by spaces.",
-        default=["test", "val", "train"],
-    )
-    parser.add_argument("-c", "--conformers", type=int, default=5)
-    parser.add_argument("-rhs", "--rm-hydrogens", type=bool, default=False)
-    args = parser.parse_args()
-
-    # Creating the Pytorch Geometric InMemoryDatasets
-    DATAROOT = "/scratch1/seumej/geom_qm/"
-    for set_name in args.names:
-        print(f"Creating {set_name} dataset with options:")
-        print(f"\tremove_h = {args.rm_hydrogens}")
-        print(f"\tn_confs = {args.conformers}\n")
-
-        dataset = GeomQMDataset(
-            root=DATAROOT,
-            split=set_name,
-            remove_h=args.rm_hydrogens,
-            n_confs=args.conformers,
-        )
-        print(dataset)

@@ -6,5 +6,23 @@ dist
 .idea/*
 
 *.DS_Store*
+*.ipynb_checkpoints/*
 
 .vscode/
+
+data/geom/*
+!data/geom/.gitkeep
+
+data/qm9/*
+!data/qm9/.gitkeep
+
+inference/tmp/geom/*
+!inference/tmp/geom/.gitkeep
+inference/tmp/qm9/*
+!inference/tmp/qm9/.gitkeep
+
+weights/geom/*
+!weights/geom/.gitkeep
+
+weights/qm9/*
+!weights/qm9/.gitkeep

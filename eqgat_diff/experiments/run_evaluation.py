@@ -28,6 +28,8 @@ class dotdict(dict):
 def evaluate(
     model_path,
     save_dir,
+    dataset,
+    dataset_root,
     save_xyz=False,
     calculate_energy=False,
     calculate_props=False,
@@ -53,6 +55,9 @@ def evaluate(
     hparams["diffusion_pretraining"] = False
     hparams["num_charge_classes"] = 6
     hparams = dotdict(hparams)
+    
+    hparams.dataset = dataset
+    hparams.dataset_root = dataset_root
 
     hparams.load_ckpt_from_pretrained = None
     hparams.load_ckpt = None
@@ -94,7 +99,7 @@ def evaluate(
     if dataset == "pubchem":
         datamodule = DataModule(hparams, evaluation=True)
     else:
-        datamodule = DataModule(hparams)
+        datamodule = DataModule(hparams, only_stats=True)
 
     from experiments.data.data_info import GeneralInfos as DataInfos
 
@@ -287,6 +292,10 @@ def get_args():
     parser = argparse.ArgumentParser(description='Data generation')
     parser.add_argument('--model-path', default="----", type=str,
                         help='Path to trained model')
+    parser.add_argument('--dataset-root', default="----", type=str,
+                        help='Path to dataset root model')
+    parser.add_argument('--dataset', default="qm9", type=str,
+                        help='Dataset to use')
     parser.add_argument("--sample-only-valid", default=False, action="store_true")
     parser.add_argument("--use-energy-guidance", default=False, action="store_true")
     parser.add_argument("--ckpt-energy-model", default=None, type=str)
@@ -326,8 +335,9 @@ def get_args():
 
 if __name__ == "__main__":
     args = get_args()
-    # Evaluate negative log-likelihood for the test partitions
     evaluate(
+        dataset=args.dataset,
+        dataset_root=args.dataset_root,
         model_path=args.model_path,
         save_dir=args.save_dir,
         ngraphs=args.ngraphs,
